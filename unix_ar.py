@@ -273,7 +273,11 @@ class ArFile(object):
                 index = self._name_map[member.name]
                 return self._entries[index].__copy__()
         else:
-            index = self._name_map[utf8(member)]
+            try:
+                index = self._name_map[utf8(member)]
+            except KeyError:
+                if member.endswith(b'/'):
+                    index = self._name_map[utf8(member)].rstrip(b'/')
             return self._entries[index].__copy__()
 
     def _extract(self, member, path):
